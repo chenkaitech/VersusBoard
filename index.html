@@ -49,6 +49,15 @@ nav{display:flex;justify-content:space-between;align-items:center;gap:16px}
 .footer{margin-top:80px;color:var(--text2);font-size:14px;border-top:1px solid rgba(255,255,255,.08);padding:32px 0}
 .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
 .gallery img{width:100%;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.35);background:#0f1118;aspect-ratio:9/19.5;object-fit:cover}
+/* 竖屏图比例 */
+.gallery img.portrait {
+  aspect-ratio: 9 / 19.5;
+}
+
+/* 横屏图比例 (iPad & 平板横屏) */
+.gallery img.landscape {
+  aspect-ratio: 16 / 10;
+}
 @media (max-width:960px){ .hero{grid-template-columns:1fr} }
 
 /* 英雄区右侧对战示意卡片（可当占位） */
@@ -61,6 +70,8 @@ nav{display:flex;justify-content:space-between;align-items:center;gap:16px}
 .vs-left .vs-name,.vs-left .vs-score{color:#66B6FF}
 .vs-right .vs-name,.vs-right .vs-score{color:#FF6A5E}
 .vs-center{background:#0E121A;color:#B9C0D4;text-align:center;padding:14px;font-weight:700;letter-spacing:.12em}
+
+
 </style>
 </head>
 <body>
@@ -150,10 +161,10 @@ nav{display:flex;justify-content:space-between;align-items:center;gap:16px}
     <h2 data-en="Screenshots" data-zh="界面预览"></h2>
     <p class="lead" data-en="Replace the images below with real screenshots from your app." data-zh="将下方占位图替换为你的真实截图。"></p>
     <div class="gallery" style="margin-top:16px">
-      <img src="en_1.png" data-en-src="en_1.png" data-zh-src="zh_1.png" alt="screenshot 1">
-      <img src="en_2.png" data-en-src="en_2.png" data-zh-src="zh_2.png" alt="screenshot 2">
-      <img src="en_3.png" data-en-src="en_3.png" data-zh-src="zh_3.png" alt="screenshot 3">
-      <img src="en_4.png" data-en-src="en_4.png" data-zh-src="zh_4.png" alt="screenshot 4">
+      <img class="landscape"  src="en_1.png" data-en-src="en_1.png" data-zh-src="zh_1.png" alt="screenshot 1">
+      <img class="landscape"  src="en_2.png" data-en-src="en_2.png" data-zh-src="zh_2.png" alt="screenshot 2">
+      <img class="landscape"  src="en_3.png" data-en-src="en_3.png" data-zh-src="zh_3.png" alt="screenshot 3">
+      <img class="landscape"  src="en_4.png" data-en-src="en_4.png" data-zh-src="zh_4.png" alt="screenshot 4">
     </div>
   </section>
 
