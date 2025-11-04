@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title id="title-el" data-en="VersusBoard · Simple Scoreboard" data-zh="VersusBoard · 超级简易记分牌">VersusBoard · Simple Scoreboard</title>
+<meta name="description" id="meta-desc"
+  data-en="VersusBoard · Simple scoreboard & timer for sports and quiz. Track fouls, timeouts & possession. Offline, no sign-in, privacy-first."
+  data-zh="VersusBoard · 超级简易记分牌与计时器：支持犯规、暂停、控球权。离线可用、无需注册、隐私优先。"
+  content="VersusBoard · Simple scoreboard & timer for sports and quiz. Track fouls, timeouts & possession. Offline, no sign-in, privacy-first.">
+<link rel="icon" href="favicon.ico">
+<style>
+:root{
+  /* 主题沿用深色，同时加入对战红/蓝提示色 */
+  --bg:#0E1117; --surface:#151923; --text:#E8EAF4; --text2:#AEB4C6;
+  --blue:#66A3FF; --red:#FF5A5A; --accent:#7DA6FF;
+  --chip:#2B3350; --chip2:#2A1F25;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);
+font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Helvetica, Arial, Noto Sans, "PingFang SC", "Hiragino Sans GB", "Microsoft Yahei", sans-serif;}
+a{color:var(--accent);text-decoration:none}
+.container{max-width:1100px;margin:0 auto;padding:40px 24px}
+nav{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700}
+.brand img.icon{width:40px;height:40px;border-radius:12px}
+.lang-switch{display:flex;gap:8px;background:var(--surface);border-radius:12px;padding:6px}
+.lang-switch button{all:unset;cursor:pointer;padding:6px 14px;border-radius:10px;color:var(--text2);font-weight:600}
+.lang-switch button.active{background:var(--accent);color:#0B1220}
+.nav-links{display:flex;gap:18px;align-items:center}
+.nav-links a{color:var(--text2);font-weight:600}
+.nav-links a:hover{color:var(--text)}
+
+.hero{display:grid;grid-template-columns:1.1fr 0.9fr;gap:36px;align-items:center;margin-top:40px}
+.hero h1{font-size:40px;line-height:1.1;margin:0 0 16px}
+.hero p.lead{color:var(--text2);font-size:18px;margin:0 0 24px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.button{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#0B1220;font-weight:700;
+  padding:14px 22px;border-radius:14px;box-shadow:0 10px 30px rgba(125,166,255,.25);} 
+.button.ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.15)}
+.card{background:var(--surface);border-radius:20px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.25);} 
+.section{margin-top:80px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.tag{display:inline-block;padding:6px 10px;border-radius:8px;font-size:13px}
+.tag.red{background:rgba(255,90,90,.16);color:var(--red)}
+.tag.blue{background:rgba(102,163,255,.16);color:var(--blue)}
+.sample{width:100%;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.35);background:#0f1118;aspect-ratio:9/19.5;object-fit:cover}
+.footer{margin-top:80px;color:var(--text2);font-size:14px;border-top:1px solid rgba(255,255,255,.08);padding:32px 0}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.gallery img{width:100%;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.35);background:#0f1118;aspect-ratio:9/19.5;object-fit:cover}
+@media (max-width:960px){ .hero{grid-template-columns:1fr} }
+
+/* 英雄区右侧对战示意卡片（可当占位） */
+.vs-card{border-radius:18px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.vs-top{display:grid;grid-template-columns:1fr 1fr}
+.vs-left{background:linear-gradient(180deg,#0F2A46,#0B1C2C);padding:24px}
+.vs-right{background:linear-gradient(180deg,#3A0E0E,#2A0B0B);padding:24px}
+.vs-name{font-weight:800;font-size:22px;opacity:.9}
+.vs-score{font-weight:900;font-size:72px;line-height:1;margin-top:8px}
+.vs-left .vs-name,.vs-left .vs-score{color:#66B6FF}
+.vs-right .vs-name,.vs-right .vs-score{color:#FF6A5E}
+.vs-center{background:#0E121A;color:#B9C0D4;text-align:center;padding:14px;font-weight:700;letter-spacing:.12em}
+</style>
+</head>
+<body>
+<div class="container">
+  <nav>
+    <div class="brand">
+      <img class="icon" src="VersusBoard_icon.png" alt="VersusBoard icon">
+      <span><span data-en="VersusBoard" data-zh="VersusBoard"></span> · <span data-en="Simple Scoreboard" data-zh="超级简易记分牌"></span></span>
+    </div>
+    <div class="nav-links"><a href="#privacy" data-en="Privacy" data-zh="隐私"></a><a href="#support" data-en="Support" data-zh="支持"></a></div>
+    <div class="lang-switch">
+      <button id="btn-en" class="active">English</button>
+      <button id="btn-zh">中文</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <h1 data-en="Run a match in one tap." data-zh="一键开赛，人人都会用"></h1>
+      <p class="lead" data-en="Your pocket scoreboard & timer—track fouls, timeouts and possession. Offline, no sign-in, no ads."
+         data-zh="口袋里的记分牌与计时器：支持犯规、暂停、控球权。离线可用、无需注册、无广告。"></p>
+      <div class="cta">
+        <a href="#" class="button" data-en="Get the App" data-zh="立即下载"></a>
+        <a href="#features" class="button ghost" data-en="Learn more" data-zh="了解功能"></a>
+      </div>
+      <div style="margin-top:24px;color:var(--text2)">
+        <span>• </span><span data-en="Scoreboard • Timer • Fouls • Timeouts • Possession" data-zh="比分 · 计时 · 犯规 · 暂停 · 控球权"></span>
+      </div>
+    </div>
+
+    <div>
+      <!-- 英雄示意卡，可用你的真实大图替换 -->
+      <div class="vs-card">
+        <div class="vs-top">
+          <div class="vs-left">
+            <div class="vs-name">TEAM A</div>
+            <div class="vs-score">15</div>
+          </div>
+          <div class="vs-right">
+            <div class="vs-name" style="text-align:right">TEAM B</div>
+            <div class="vs-score" style="text-align:right">20</div>
+          </div>
+        </div>
+        <div class="vs-center" data-en="POSSESSION ▶" data-zh="控球 ▶"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="section">
+    <h2 data-en="Core features" data-zh="核心功能"></h2>
+    <div class="grid-3" style="margin-top:24px">
+      <div class="card">
+        <div class="tag blue">Scoreboard</div>
+        <h3 style="margin:12px 0" data-en="Big, cast-ready score screen" data-zh="超大比分，投屏更清晰"></h3>
+        <p class="text2" data-en="Audience Mode shows only scores & time for clean projection." data-zh="观众模式仅显示比分与时间，投屏干净利落。"></p>
+      </div>
+      <div class="card">
+        <div class="tag blue">Timer</div>
+        <h3 style="margin:12px 0" data-en="Countdown & presets" data-zh="倒计时与预设"></h3>
+        <p class="text2" data-en="24s / 30s / 1:00 / 5:00 / 10:00 in one tap; buzzer & flash at 0." data-zh="一键 24s/30s/1:00/5:00/10:00；到 0 蜂鸣与闪屏提醒。"></p>
+      </div>
+      <div class="card">
+        <div class="tag red">Fouls</div>
+        <h3 style="margin:12px 0" data-en="Track team fouls" data-zh="记录每队犯规"></h3>
+        <p class="text2" data-en="Lightweight counters for informal games and classes." data-zh="轻量计数，适合友谊赛与课堂活动。"></p>
+      </div>
+      <div class="card">
+        <div class="tag red">Timeouts</div>
+        <h3 style="margin:12px 0" data-en="Manage timeouts" data-zh="管理暂停次数"></h3>
+        <p class="text2" data-en="Simple +/- tracking of remaining timeouts per team." data-zh="每队剩余暂停数，简单加减即可。"></p>
+      </div>
+      <div class="card">
+        <div class="tag blue">Possession</div>
+        <h3 style="margin:12px 0" data-en="Clear ▶ possession arrow" data-zh="清晰 ▶ 控球箭头"></h3>
+        <p class="text2" data-en="End the 'whose turn' debate with one obvious indicator." data-zh="用一个明显的箭头，结束“轮到谁”的争议。"></p>
+      </div>
+      <div class="card">
+        <div class="tag" style="background:rgba(255,255,255,.12);color:#fff">Reliability</div>
+        <h3 style="margin:12px 0" data-en="Undo, Lock & Offline" data-zh="撤销、锁定与离线"></h3>
+        <p class="text2" data-en="Fix mistakes with Undo, avoid mishaps with Lock. Works offline; no account."
+           data-zh="误触可撤销，锁定防乱按；离线可用，无需账号。"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 data-en="Screenshots" data-zh="界面预览"></h2>
+    <p class="lead" data-en="Replace the images below with real screenshots from your app." data-zh="将下方占位图替换为你的真实截图。"></p>
+    <div class="gallery" style="margin-top:16px">
+      <img src="vb_en_1.png" data-en-src="vb_en_1.png" data-zh-src="vb_zh_1.png" alt="screenshot 1">
+      <img src="vb_en_2.png" data-en-src="vb_en_2.png" data-zh-src="vb_zh_2.png" alt="screenshot 2">
+      <img src="vb_en_3.png" data-en-src="vb_en_3.png" data-zh-src="vb_zh_3.png" alt="screenshot 3">
+      <img src="vb_en_4.png" data-en-src="vb_en_4.png" data-zh-src="vb_zh_4.png" alt="screenshot 4">
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="grid-2">
+      <div class="card">
+        <h2 id="privacy" data-en="Privacy" data-zh="隐私"></h2>
+        <p class="text2" data-en="Your data stays on device." data-zh="你的数据只在本机。"></p>
+        <ul style="margin:12px 0 0 18px; color: var(--text2); line-height:1.7">
+          <li data-en="No sign-in. We do not track device IDs or behavior." data-zh="无需注册；不追踪设备标识或行为数据。"></li>
+          <li data-en="No access to contacts, location, photos, or microphone." data-zh="不请求联系人、位置、照片或麦克风权限。"></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2 id="support" data-en="Support" data-zh="支持"></h2>
+        <p class="text2" data-en="Questions or feedback? Email us." data-zh="问题或建议？欢迎邮件联系。"></p>
+        <p><a href="mailto:support@versusboard.app">support@versusboard.app</a></p>
+         <p>
+          <a href="#" target="_blank" rel="noopener"
+             data-en="Marketing site" data-zh="营销网站"></a><br>
+          <a href="#" target="_blank" rel="noopener"
+             data-en="Privacy policy" data-zh="隐私政策"></a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="grid-2">
+      <div>
+        <strong><span data-en="VersusBoard" data-zh="VersusBoard"></span> · <span data-en="Simple Scoreboard" data-zh="超级简易记分牌"></span></strong><br>
+        <span data-en="© 2025 VersusBoard Team. All rights reserved." data-zh="© 2025 VersusBoard 团队。保留所有权利。"></span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+function swapLangImages(lang){
+  document.querySelectorAll("img[data-en-src]").forEach(img=>{
+    const src = img.getAttribute(lang==="zh" ? "data-zh-src" : "data-en-src");
+    if(src) img.setAttribute("src", src);
+  });
+}
+function setLang(lang){
+  document.querySelectorAll("[data-en]").forEach(el=>{
+    const text = el.getAttribute(lang === "zh" ? "data-zh" : "data-en");
+    if(text!==null){ el.textContent = text; }
+  });
+  // 更新 <title> 与 <meta description>
+  const titleEl = document.getElementById("title-el");
+  if(titleEl){
+    const t = titleEl.getAttribute(lang === "zh" ? "data-zh" : "data-en");
+    if(t) document.title = t;
+  }
+  const metaDesc = document.getElementById("meta-desc");
+  if(metaDesc){
+    const d = metaDesc.getAttribute(lang === "zh" ? "data-zh" : "data-en");
+    if(d) metaDesc.setAttribute("content", d);
+  }
+  swapLangImages(lang);
+  document.getElementById("btn-en").classList.toggle("active", lang==="en");
+  document.getElementById("btn-zh").classList.toggle("active", lang==="zh");
+  localStorage.setItem("VersusBoard-lang", lang);
+}
+document.getElementById("btn-en").onclick=()=>setLang("en");
+document.getElementById("btn-zh").onclick=()=>setLang("zh");
+const saved = localStorage.getItem("VersusBoard-lang") || (navigator.language.startsWith("zh")?"zh":"en");
+setLang(saved);
+</script>
+</body>
+</html>
